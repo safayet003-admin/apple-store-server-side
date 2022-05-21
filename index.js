@@ -8,7 +8,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 app.use(cors());
 app.use(express.json())
 
-const uri = "mongodb+srv://${process.env.DB_USER}:{process.env.DB_PASS}@cluster0.tbjp1.mongodb.net/?retryWrites=true&w=majority";
+// const uri = "mongodb+srv://${process.env.DB_USER}:{process.env.DB_PASS}@cluster0.tbjp1.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://applestore:RkGfDv8lGf3Hgvfp3@cluster0.tbjp1.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -30,35 +31,43 @@ async function run() {
             res.send(result)
             console.log("loaded");
         })
-        app.get('/product', verifyJWT, async (req, res) => {
+        app.get('/product', async (req, res) => {
             const decodedEmail = req.decoded.email
             const email = req.query.email;
-            if (email === decodedEmail) {
-                const query = { email: email }
-                const cursor = appleStoreCollection.find(query);
-                const order = await cursor.toArray();
-                res.send(order)
-            }
-            else {
-                res.status(403).send({ message: "forbiden access" })
-            }
+            const query = { email: email }
+            const cursor = appleStoreCollection.find(query);
+            const order = await cursor.toArray();
+            res.send(order)
+
+            // if (email === decodedEmail) {
+            //     const query = { email: email }
+            //     const cursor = appleStoreCollection.find(query);
+            //     const order = await cursor.toArray();
+            //     res.send(order)
+            // }
+            // else {
+            //     res.status(403).send({ message: "forbiden access" })
+            // }
         })
         //post products
         app.post('/products', async (req, res) => {
             const newProduct = req.body;
-            const tokenInfo = req.headers.authorization;
+            console.log(newProduct);
+            const result = await appleStoreCollection.insertOne(newProduct)
+            res.send({ success: "product add successfully" })
+            // const tokenInfo = req.headers.authorization;
 
-            const [email, accesstoken] = tokenInfo.split(" ")
-            const decoded = verfyToken(accesstoken)
-            if (email !== decoded.email) {
-                res.send({ success: "unAuthorized user" })
+            // const [email, accesstoken] = tokenInfo.split(" ")
+            // const decoded = verfyToken(accesstoken)
+            // if (email !== decoded.email) {
+            //     res.send({ success: "unAuthorized user" })
 
-            }
-            else {
-                const result = await mackbookCollection.insertOne(newProduct)
-                res.send({ success: "product add successfully" })
+            // }
+            // else {
+            //     const result = await appleStoreCollection.insertOne(newProduct)
+            //     res.send({ success: "product add successfully" })
 
-            }
+            // }
         })
         // Update quantity
         app.put('/products/:id', async (req, res) => {
