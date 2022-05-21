@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 4000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middleware
 app.use(cors());
@@ -83,14 +83,15 @@ async function run() {
                     quantity
                 }
             }
-            const result = await mackbookCollection.updateOne(filter, updatePro, option);
+            const result = await appleStoreCollection.updateOne(filter, updatePro, option);
             res.send(result)
         })
         //delete 
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
-            const result = await mackbookCollection.deleteOne(query);
+            // const query = {_id: ObjectId(id)}
+            const result = await appleStoreCollection.deleteOne(query);
             res.send(result)
         })
     }
