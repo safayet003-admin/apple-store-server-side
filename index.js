@@ -4,6 +4,10 @@ const cors = require('cors');
 const port = process.env.PORT || 4000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
+//middleware
+app.use(cors());
+app.use(express.json())
+
 const uri = "mongodb+srv://applestore:RkGfDv8lGf3Hgvfp3@cluster0.tbjp1.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -33,6 +37,8 @@ async function run() {
             const result = await appleStoreCollection.find(query).toArray();
             res.send(result)
         })
+
+
         app.get('/product', async (req, res) => {
             const decodedEmail = req.decoded.email
             const email = req.query.email;
@@ -40,6 +46,7 @@ async function run() {
             const cursor = appleStoreCollection.find(query);
             const order = await cursor.toArray();
             res.send(order)
+
 
         })
         //post products
@@ -49,7 +56,6 @@ async function run() {
             const result = await appleStoreCollection.insertOne(newProduct)
             res.send({ success: "product add successfully" })
         })
-
         // Update quantity
 
         app.put('/products/:id', async (req, res) => {
