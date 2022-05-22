@@ -33,10 +33,6 @@ async function run() {
             const result = await appleStoreCollection.find(query).toArray();
             res.send(result)
         })
-
-
-
-
         app.get('/product', async (req, res) => {
             const decodedEmail = req.decoded.email
             const email = req.query.email;
@@ -45,7 +41,6 @@ async function run() {
             const order = await cursor.toArray();
             res.send(order)
 
-
         })
         //post products
         app.post('/products', async (req, res) => {
@@ -53,23 +48,9 @@ async function run() {
             console.log(newProduct);
             const result = await appleStoreCollection.insertOne(newProduct)
             res.send({ success: "product add successfully" })
-            // const tokenInfo = req.headers.authorization;
-
-            // const [email, accesstoken] = tokenInfo.split(" ")
-            // const decoded = verfyToken(accesstoken)
-            // if (email !== decoded.email) {
-            //     res.send({ success: "unAuthorized user" })
-
-            // }
-            // else {
-            //     const result = await appleStoreCollection.insertOne(newProduct)
-            //     res.send({ success: "product add successfully" })
-
-            // }
         })
+
         // Update quantity
-
-
 
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -92,7 +73,6 @@ async function run() {
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
-            // const query = {_id: ObjectId(id)}
             const result = await appleStoreCollection.deleteOne(query);
             res.send(result)
         })
@@ -102,14 +82,6 @@ async function run() {
     }
 }
 run().catch(console.dir)
-/* 
-
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
- */
 
 app.get('/', (req, res) => {
     res.send('Apples Store')
